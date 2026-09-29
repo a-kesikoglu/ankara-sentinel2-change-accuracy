@@ -1,0 +1,14 @@
+{
+ "n": 100,
+ "agree_2018": 0.88,
+ "agree_2025": 0.88,
+ "agree_both_dates": 0.83,
+ "agree_change_nochange": 0.9,
+ "n_change_orig": 14,
+ "n_change_rep": 18,
+ "agree_by_confidence": {
+  "1": 0.5833333333333334,
+  "2": 0.7931034482758621,
+  "3": 0.9787234042553191
+ }
+}
