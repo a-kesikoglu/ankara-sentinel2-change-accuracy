@@ -1,9 +1,0 @@
-{
- "cva_otsu_threshold": 0.29460591077804565,
- "cva_fraction_above": 0.26227576224754784,
- "change_ha_raw_maps": 10471.07,
- "change_ha_majority": 9765.52,
- "change_ha_pcc_mmu": 9468.800000000001,
- "change_ha_cpcc_mmu": 4468.64,
- "total_ha": 43063.11
-}
