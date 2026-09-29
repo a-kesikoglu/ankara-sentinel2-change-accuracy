@@ -118,7 +118,10 @@ N['otsu'] = f'{POST["cva_otsu_threshold"]:.3f}'; N['cva_above'] = pct(POST['cva_
 N['ch_raw'] = f0(POST['change_ha_raw_maps']); N['ch_maj'] = f0(POST['change_ha_majority'])
 N['ch_pcc'] = f0(POST['change_ha_pcc_mmu']); N['ch_cpcc'] = f0(POST['change_ha_cpcc_mmu'])
 N['ch_pcc_pct'] = pct(POST['change_ha_pcc_mmu'] / tot_ha); N['ch_cpcc_pct'] = pct(POST['change_ha_cpcc_mmu'] / tot_ha)
-N['ch_dw'] = f0(dw_change_area())
+try:
+    N['ch_dw'] = f0(dw_change_area())
+except Exception:  # raw Dynamic World layers not available
+    N['ch_dw'] = f0(load('dw_change_area.json')['dw_pcc_change_ha'])
 N['pcc_lv_bare'] = f0(TRPCC.loc['Low vegetation', 'Bare/sparse']); N['pcc_lv_built'] = f0(TRPCC.loc['Low vegetation', 'Built-up'])
 N['pcc_built_lv'] = f0(TRPCC.loc['Built-up', 'Low vegetation'])
 N['cva_stable_above'] = pct(CVA.loc['No change', 'share_above_otsu'])
