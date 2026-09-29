@@ -1,0 +1,9 @@
+h,stratum,N_pixels,area_ha,n_sample
+1,Stable water,5428,54.28,30
+2,Stable tree cover,128965,1289.65,50
+3,Stable low vegetation,1550727,15507.27,90
+4,Stable built-up,1548012,15480.12,70
+5,Stable bare/sparse,126299,1262.99,50
+6,CPCC change to built-up,112790,1127.9,70
+7,CPCC other change,334074,3340.7400000000002,70
+8,PCC change without CVA support,500016,5000.16,70

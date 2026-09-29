@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the article below."
+title: "ankara-sentinel2-change-accuracy"
+type: software
+license: MIT
+authors:
+  - name: "[Author Name]"
+    affiliation: "Kayseri University"
+repository-code: "https://github.com/[username]/ankara-sentinel2-change-accuracy"
+preferred-citation:
+  type: article
+  title: "Design-based accuracy and area estimation of Sentinel-2 land cover change in western Ankara, Türkiye"
+  authors:
+    - name: "[Author Name]"
+  journal: "Journal of EngineX: Advanced Engineering and Technology"
+  year: 2026

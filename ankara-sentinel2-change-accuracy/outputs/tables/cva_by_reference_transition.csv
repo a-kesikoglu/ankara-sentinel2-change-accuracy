@@ -1,0 +1,7 @@
+ref_transition,n,median_magnitude,share_above_otsu
+Bare/sparse → Built-up,15,0.384,0.6666666666666666
+Bare/sparse → Low vegetation,17,0.317,0.5882352941176471
+Low vegetation → Bare/sparse,28,0.4385,0.7142857142857143
+Low vegetation → Built-up,47,0.352,0.7021276595744681
+No change,386,0.164,0.30569948186528495
+Other change,7,0.171,0.14285714285714285
