@@ -19,11 +19,10 @@ estimators (Olofsson et al. 2014; Stehman 2014).
 | `data/samples/training_points.csv` | Training locations (UTM 36N, grid row/column, class) |
 | `data/samples/validation_points.csv` | 500 validation pixels with stratum, coordinates and VHR acquisition dates |
 | `data/samples/reference_labels.csv` | Reference labels 2018 and 2025 and interpretation confidence (1 low to 3 high) |
-| `data/samples/repeat_labels.csv`, `repeat_key.csv` | Blind repeat interpretation of 100 validation pixels |
 | `data/samples/validation_sample_full_table.csv` | One row per validation pixel: coordinates, stratum, reference labels, confidence, Wayback release, VHR acquisition date and resolution, labels of the RF (PCC, CPCC) and Dynamic World maps, CVA magnitude, distance to the nearest training location |
 | `data/raw/` | Administrative boundaries used in the figures (FAO GAUL 2015) |
 | `outputs/maps/` | GeoTIFF, EPSG:32636, 10 m: RF maps (filtered and raw), maximum class probability, PCC and CPCC change codes (from class × 10 + to class), strata, CVA magnitude (× 1000) |
-| `outputs/tables/` | Error matrices in sample counts and area proportions, class and change accuracies, area and transition estimates, agreement with Dynamic World and ESA WorldCover, classifier and feature-set experiments, cloud-threshold and reference-subset sensitivity, repeat interpretation agreement, permutation importance, scene lists, Wayback release records |
+| `outputs/tables/` | Error matrices in sample counts and area proportions, class and change accuracies, area and transition estimates, agreement with Dynamic World and ESA WorldCover, classifier and feature-set experiments, cloud-threshold and reference-subset sensitivity, permutation importance, scene lists, Wayback release records |
 | `figures/` | Article figures (300 dpi) and the seasonal composites with valid observation counts |
 
 Class codes: 1 water, 2 tree cover, 3 low vegetation, 4 built-up, 5 bare/sparse.
@@ -41,8 +40,7 @@ Python 3.12, `pip install -r requirements.txt`, and a Google Earth Engine accoun
 5. `reference_chips.py`: interpretation sheets from the Esri Wayback service (not included in the repository)
 6. `evaluate.py`, `compare.py`, `sensitivity.py`, `diagnostics.py`: accuracy, area estimates and robustness
 7. `cloud_sensitivity.py`: cloud probability thresholds of 30, 40 and 50%
-8. `repeat_chips.py`, `repeat_agreement.py`: repeat interpretation
-9. `figures.py`: figures; `results_registry.py` collects every number reported in the article
+8. `figures.py`: figures; `results_registry.py` collects every number reported in the article
 
 Steps 1 to 4 require Earth Engine access and regenerate `data/processed/` (about 550 MB, not included), which the later steps also read.
 The main estimates of the article can be checked directly from the included maps and samples with
