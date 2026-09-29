@@ -4,13 +4,13 @@ title: "ankara-sentinel2-change-accuracy"
 type: software
 license: MIT
 authors:
-  - name: "[Author Name]"
+  - name: "Abdüsselam Kesikoğlu"
     affiliation: "Kayseri University"
-repository-code: "https://github.com/[username]/ankara-sentinel2-change-accuracy"
+repository-code: "https://github.com/a-kesikoglu/ankara-sentinel2-change-accuracy"
 preferred-citation:
   type: article
   title: "Design-based accuracy and area estimation of Sentinel-2 land cover change in western Ankara, Türkiye"
   authors:
-    - name: "[Author Name]"
+    - name: "Abdüsselam Kesikoğlu"
   journal: "Journal of EngineX: Advanced Engineering and Technology"
   year: 2026
