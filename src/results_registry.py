@@ -143,7 +143,9 @@ tc = AR[AR['class'] == 'Total change'].iloc[0]; bg = AR[AR['class'] == 'Gain of 
 N['est_change'] = ha(tc.est_ha, tc.ci95_ha); N['est_change_pct'] = pct(tc.est_ha / tot_ha)
 N['stable_pct'] = f'{100 * (1 - tc.est_ha / tot_ha):.0f}'
 N['overstate'] = f'{100 * (POST["change_ha_pcc_mmu"] / tc.est_ha - 1):.0f}'
-N['est_builtgain'] = ha(bg.est_ha, bg.ci95_ha); N['map_builtgain_pcc'] = f0(bg.map_ha_pcc)
+N['est_builtgain'] = ha(bg.est_ha, bg.ci95_ha)
+N['rel_ci_change'] = f'{100 * tc.ci95_ha / tc.est_ha:.0f}'
+N['oa_ci'] = f'{100 * Z * oa("RF_2018")[1]:.1f}'; N['map_builtgain_pcc'] = f0(bg.map_ha_pcc)
 t = tr('Low vegetation', 'Built-up'); N['est_lv_built'] = ha(t.est_ha, t.ci95_ha); N['n_lv_built'] = str(int(t.n_ref))
 t = tr('Low vegetation', 'Bare/sparse'); N['est_lv_bare'] = ha(t.est_ha, t.ci95_ha)
 N['n_ref_change'] = str(int(TR.n_ref.sum()))
@@ -152,6 +154,7 @@ e18l = ar(2018, 'Low vegetation'); N['lv_under18'] = f0(e18l.est_ha - MP.loc['Lo
 s = SENS['All samples']
 N['net_built'] = ha(*s['net_builtup_ha']); N['net_built_pct'] = f'{100 * s["net_builtup_ha"][0] / e18.est_ha:.0f}'
 N['net_built_v'] = f0(s['net_builtup_ha'][0])
+N['rel_ci_netbuilt'] = f'{100 * s["net_builtup_ha"][1] / s["net_builtup_ha"][0]:.0f}'
 N['map_net_built'] = f0(MP.loc['Built-up', 'net_ha']); N['map_net_bare'] = f0(MP.loc['Bare/sparse', 'net_ha'])
 # class-level net estimates from sensitivity.py
 SC = json.load(open(os.path.join(T, 'sensitivity_confidence.json')))['all']

@@ -40,7 +40,7 @@ Python 3.12, `pip install -r requirements.txt`, and a Google Earth Engine accoun
 5. `reference_chips.py`: interpretation sheets from the Esri Wayback service (not included in the repository)
 6. `evaluate.py`, `compare.py`, `sensitivity.py`, `diagnostics.py`: accuracy, area estimates and robustness
 7. `cloud_sensitivity.py`: cloud probability thresholds of 30, 40 and 50%
-8. `figures.py`: figures; `results_registry.py` collects every number reported in the article
+8. `figures.py`: figures, drawn at the printed width of 15.2 cm; `print_size.py` enforces and logs a minimum printed font size of 8 pt; `results_registry.py` collects every number reported in the article
 
 Steps 1 to 4 require Earth Engine access and regenerate `data/processed/` (about 550 MB, not included), which the later steps also read.
 The main estimates of the article can be checked directly from the included maps and samples with
