@@ -42,7 +42,7 @@ PAIRS = [
  ('(a) CVA magnitude', '(a) CVA büyüklüğü'),
  ("(a) User's accuracy", '(a) Kullanıcı doğruluğu'), ("(b) Producer's accuracy", '(b) Üretici doğruluğu'),
  ('(c) Change products', '(c) Değişim ürünleri'), ('(c) Reference estimate', '(c) Referans kestirimi'),
- ('RF land cover', 'RF arazi örtüsü'), ('(b) Ankara province', '(b) Ankara ili'), ('(c) PCC change', '(c) PCC değişimi'),
+ ('RF land cover', 'RF arazi örtüsü'), ('(b) Ankara province', '(b) Ankara ili'), ('(c) PCC change', '(c) PCC değişimi'), ('PCC change', 'PCC değişimi'),
  ('Spring + summer observations', 'İlkbahar + yaz gözlemleri'), ('Transition area (ha)', 'Geçiş alanı (ha)'),
  ('Overall accuracy (%)', 'Genel doğruluk (%)'), ('Accuracy (%)', 'Doğruluk (%)'), ('Area (10³ ha)', 'Alan (10³ ha)'),
  ('Estimate ± 95% CI', 'Kestirim ± %95 GA'), ('Map pixel count', 'Harita piksel sayımı'),

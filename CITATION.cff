@@ -5,7 +5,7 @@ type: software
 license: MIT
 authors:
   - name: "Abdüsselam Kesikoğlu"
-    affiliation: "Kayseri University, Tomarza MA Vocational School"
+    affiliation: "Mapping and Cadastre Program, Department of Architecture and Urban Planning, Tomarza Mustafa Akincioglu Vocational School, Kayseri University, Kayseri, 38940, Türkiye"
     email: "kesikoglu@kayseri.edu.tr"
     orcid: "https://orcid.org/0000-0003-4976-0791"
 repository-code: "https://github.com/a-kesikoglu/ankara-sentinel2-change-accuracy"

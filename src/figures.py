@@ -12,6 +12,7 @@ from PIL import Image
 from pyproj import Transformer
 from common import *
 from estimators import Z95
+from change import cva_magnitude
 import print_size
 print_size.enable()  # minimum 8 pt at printed size
 if os.environ.get('FIG_LANG') == 'tr':
@@ -24,6 +25,8 @@ plt.rcParams.update({'font.family': 'Palatino Linotype', 'font.size': 8, 'axes.l
                      'legend.fontsize': 8, 'legend.title_fontsize': 8.5,
                      'axes.edgecolor': '#444444', 'xtick.color': '#333333', 'ytick.color': '#333333',
                      'savefig.dpi': 300, 'savefig.bbox': 'tight', 'savefig.pad_inches': 0.03})
+BIG = {'font.size': 9, 'axes.titlesize': 9.5, 'axes.labelsize': 9, 'xtick.labelsize': 9, 'ytick.labelsize': 9,
+       'legend.fontsize': 9}   # map and accuracy figures with dense labels: 9 pt floor at printed size
 INK, GRID = '#222222', '#dddddd'
 y1, y2 = YEARS
 NAMES = [CLASSES[c] for c in CLASSES]
@@ -75,14 +78,14 @@ def scalebar(ax, ext, length, label, loc=(0.05, 0.06), color='black'):
     sx, sy = x0 + loc[0] * (x1 - x0), yb + loc[1] * (yt - yb); h = 0.014 * (yt - yb)
     ax.add_patch(Rectangle((sx, sy), length / 2, h, fc='black', ec='black', lw=0.5, zorder=5))
     ax.add_patch(Rectangle((sx + length / 2, sy), length / 2, h, fc='white', ec='black', lw=0.5, zorder=5))
-    ax.text(sx + length / 2, sy + 2.2 * h, label, ha='center', va='bottom', fontsize=8, zorder=5,
+    ax.text(sx + length / 2, sy + 2.2 * h, label, ha='center', va='bottom', zorder=5,
             bbox=dict(fc='white', ec='none', alpha=0.75, pad=0.8))
 
 
 def north(ax, ext, pos=(0.95, 0.80)):
     x0, x1, yb, yt = ext
     x, y = x0 + pos[0] * (x1 - x0), yb + pos[1] * (yt - yb)
-    ax.annotate('N', xy=(x, y + 0.12 * (yt - yb)), xytext=(x, y), ha='center', va='top', fontsize=8, fontweight='bold',
+    ax.annotate('N', xy=(x, y + 0.12 * (yt - yb)), xytext=(x, y), ha='center', va='top', fontweight='bold',
                 arrowprops=dict(arrowstyle='-|>', color='black', lw=1), zorder=6,
                 bbox=dict(fc='white', ec='none', alpha=0.7, pad=0.5))
 
@@ -239,17 +242,18 @@ def fig04():
 # ---------------------------------------------------------------- Figure 5 -----------------
 def fig05():
     M = read(f'{MAPS}/cva_magnitude.tif')[0][0] / 1000
-    thr = json.load(open(f'{TABS}/change_area_postprocessing.json'))['cva_otsu_threshold']
+    post = json.load(open(f'{TABS}/change_area_postprocessing.json')); thr = post['cva_otsu_threshold']
     fig = plt.figure(figsize=(FW, 4.8))
     a = fig.add_axes([0.0, 0.50, 0.55, 0.47]); b = fig.add_axes([0.745, 0.585, 0.25, 0.36]); c = fig.add_axes([0.09, 0.15, 0.90, 0.26])
     im = a.imshow(np.clip(M, 0, 0.8), cmap='Greys', vmin=0, vmax=0.8, extent=EXT, interpolation='bilinear')
     noticks(a); a.set_title('(a) CVA magnitude', loc='left', pad=3); scalebar(a, EXT, 5000, '5 km')
     cax = fig.add_axes([0.565, 0.56, 0.015, 0.36]); fig.colorbar(im, cax=cax, ticks=[0, 0.2, 0.4, 0.6, 0.8])
-    v = M[M > 0].ravel(); v = np.random.default_rng(1).choice(v, 400000, replace=False)
+    Mf, valid = cva_magnitude()   # same 500,000 pixels as the Otsu threshold (change.py)
+    v = Mf.ravel()[np.random.default_rng(SEED).choice(np.flatnonzero(valid), 500000, replace=False)]
     b.hist(v, bins=np.linspace(0, 1.2, 97), color='#9a9a9a', ec='none')
     b.hist(v[v > thr], bins=np.linspace(0, 1.2, 97), color='#c51b7d', ec='none')
     b.axvline(thr, color=INK, lw=0.9, ls='--')
-    b.text(thr + 0.04, b.get_ylim()[1] * 0.97, f'Otsu threshold = {thr:.3f}\n{100 * (v > thr).mean():.1f}% of pixels above', va='top')
+    b.text(thr + 0.04, b.get_ylim()[1] * 0.97, f'Otsu threshold = {thr:.3f}\n{100 * post['cva_fraction_above']:.1f}% of pixels above', va='top')
     b.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x / 1000:.0f}'))
     b.set_xticks([0, 0.4, 0.8, 1.2])
     b.set_xlabel('Magnitude (reflectance units)'); b.set_ylabel('Pixels (10³)')
@@ -315,8 +319,8 @@ SITES = [('Yapracık and Bağlıca', 32.585, 39.905), ('Etimesgut and Eryaman', 
 def fig06():
     l1 = read(f'{MAPS}/lulc_{y1}_rf.tif')[0][0]; l2 = read(f'{MAPS}/lulc_{y2}_pcc.tif')[0][0]
     cc = change_code(l1, l2)
-    fig, axs = plt.subplots(3, 5, figsize=(FW, 4.55), gridspec_kw={'wspace': 0.03, 'hspace': 0.05})
-    fig.subplots_adjust(left=0.065, right=1.0, top=0.95, bottom=0.20)
+    fig, axs = plt.subplots(3, 5, figsize=(FW, 4.85), gridspec_kw={'wspace': 0.03, 'hspace': 0.05})
+    fig.subplots_adjust(left=0.07, right=1.0, top=0.95, bottom=0.22)
     half = 150
     for i, (name, lo, la) in enumerate(SITES):
         x, y = to_utm.transform(lo, la); c = int((x - T.c) / T.a); r = int((y - T.f) / T.e)
@@ -355,8 +359,8 @@ def fig07():
     acc = pd.read_csv(f'{TABS}/accuracy_by_class.csv'); ch = pd.read_csv(f'{TABS}/change_accuracy.csv').set_index('method')
     maps = [('RF_2018', f'RF {y1}', '#3a7dc9', 'o'), ('RF_PCC_2025', f'RF {y2}', '#3a7dc9', 's'),
             ('DW_2018', f'DW {y1}', '#e08214', 'o'), ('DW_2025', f'DW {y2}', '#e08214', 's')]
-    fig = plt.figure(figsize=(FW, 3.4))
-    axs = [fig.add_axes([0.075, 0.33, 0.26, 0.60]), fig.add_axes([0.385, 0.33, 0.26, 0.60]), fig.add_axes([0.81, 0.33, 0.18, 0.60])]
+    fig = plt.figure(figsize=(FW, 3.7))
+    axs = [fig.add_axes([0.075, 0.33, 0.25, 0.60]), fig.add_axes([0.375, 0.33, 0.25, 0.60]), fig.add_axes([0.835, 0.33, 0.16, 0.60])]
     xb = np.arange(5)
     for ax, met, t in ((axs[0], 'UA', "(a) User's accuracy"), (axs[1], 'PA', "(b) Producer's accuracy")):
         for k, (m, lab, col, mk) in enumerate(maps):
@@ -379,7 +383,7 @@ def fig07():
     ax.set_yticks(yb); ax.set_yticklabels([l for _, l in mets]); ax.set_xlim(0, 100); ax.set_xticks([0, 50, 100])
     ax.grid(axis='x', color=GRID, lw=0.5); ax.set_axisbelow(True); ax.set_xlabel('Accuracy (%)')
     ax.set_title('(c) Change products', loc='left', pad=3)
-    fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc='lower center', bbox_to_anchor=(0.90, -0.02), ncol=1,
+    fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc='lower center', bbox_to_anchor=(0.91, -0.02), ncol=1,
                handletextpad=0.3, labelspacing=0.25)
     for a_ in axs:
         for s in ('top', 'right'):
@@ -475,8 +479,8 @@ def fig09():
 # ---------------------------------------------------------------- Figure 10 ----------------
 def fig10():
     e = pd.read_csv(f'{TABS}/experiments_classifier_featureset.csv'); pi = pd.read_csv(f'{TABS}/permutation_importance_grouped.csv')
-    fig = plt.figure(figsize=(FW, 3.0))
-    axs = [fig.add_axes([0.085, 0.17, 0.44, 0.75]), fig.add_axes([0.765, 0.17, 0.225, 0.75])]
+    fig = plt.figure(figsize=(FW, 3.5))
+    axs = [fig.add_axes([0.09, 0.30, 0.44, 0.63]), fig.add_axes([0.765, 0.30, 0.225, 0.63])]
     ax = axs[0]; fs = list(dict.fromkeys(e.feature_set)); xb = np.arange(len(fs))
     for k, (clf, col) in enumerate((('RF', '#3a7dc9'), ('SVM', '#c51b7d'))):
         for j, (yr, mk) in enumerate(((y1, 'o'), (y2, 's'))):
@@ -487,7 +491,8 @@ def fig10():
     ax.set_xticks(xb); ax.set_xticklabels(fs); ax.set_ylabel('Overall accuracy (%)'); ax.set_ylim(60, 90)
     ax.set_xlabel('Feature set')
     ax.grid(axis='y', color=GRID, lw=0.5); ax.set_axisbelow(True)
-    ax.legend(frameon=False, ncol=4, loc='lower center', columnspacing=0.8, handletextpad=0.2, borderaxespad=0.2)
+    fig.legend(*ax.get_legend_handles_labels(), frameon=False, ncol=4, loc='lower center', bbox_to_anchor=(0.31, -0.01),
+               columnspacing=0.9, handletextpad=0.2)
     ax.set_title('(a) Classifier and feature set', loc='left', pad=3)
     ax = axs[1]; pi = pi.iloc[::-1]
     ax.barh(np.arange(len(pi)), pi.mean_drop_pp, xerr=pi.sd_drop_pp, color='#3a7dc9', height=0.6, capsize=2, error_kw=dict(lw=0.7))
@@ -548,7 +553,9 @@ if __name__ == '__main__':
     sp['ref_transition'] = [ttype(a, b) for a, b in zip(sp.ref_2018, sp.ref_2025)]
     todo = sys.argv[1:] or ['fig01', 'fig02', 'fig03', 'fig04', 'fig05', 'fig06', 'fig07', 'fig08', 'fig09', 'fig10', 'figS1', 'figS2']
     for f in todo:
-        globals()[f](); print('done', f, flush=True)
+        with plt.rc_context(BIG if f in ('fig04', 'fig06', 'fig07', 'fig10') else {}):
+            globals()[f]()
+        print('done', f, flush=True)
 
 
 
